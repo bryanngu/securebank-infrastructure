@@ -64,3 +64,10 @@ terraform apply
 - Nginx version hidden
 - Root login disabled
 
+## Changelog
+
+### Version 2.0 - Provisioner Fix
+- Added DEBIAN_FRONTEND=noninteractive to prevent apt timeouts
+- Added Phase 4 to explicitly start and enable services
+- Added Phase 5 for verification of all services
+- Fixed fail2ban not starting after installation
