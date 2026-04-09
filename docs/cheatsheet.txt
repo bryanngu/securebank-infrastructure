@@ -1,0 +1,87 @@
+nano ~/lab-projects/scripting/cheatsheet.txt
+```
+
+Type this:
+```
+=== MY SECURITY CHEAT SHEET ===
+
+=== SSH HARDENING ===
+/etc/ssh/sshd_config              → main SSH config
+/etc/ssh/sshd_config.d/           → override configs
+PermitRootLogin no                → block root login
+PasswordAuthentication no         → disable passwords
+Port 2222                         → change default port
+
+CHECK SETTINGS:
+sudo sshd -T | grep -E "permitrootlogin|passwordauthentication|port"
+
+CHECK ALL CONFIG FILES:
+sudo grep -r "PasswordAuthentication" /etc/ssh/
+
+=== TRAFFIC CAPTURE ===
+ip link show                    → list all interfaces
+sudo tcpdump -i INTERFACE -n    → capture traffic
+sudo tcpdump -i any -n          → capture all interfaces
+sudo tcpdump -i INTERFACE -n -w file.pcap → save to file
+
+
+RECONNAISSANCE
+──────────────
+nmap IP                    → basic port scan
+nmap -sV -sC IP            → version and script scan
+nmap -p- IP                → scan all 65535 ports
+nmap -p- -T4 IP            → fast scan all ports
+
+BRUTE FORCE
+───────────
+hydra -l USER -P LIST ssh://IP -t 4  → SSH brute force
+
+WEB ENUMERATION
+───────────────
+gobuster dir -u http://IP -w WORDLIST → directory scan
+
+FIREWALL
+────────
+ufw status verbose         → check firewall status
+ufw allow 22/tcp           → allow SSH
+ufw enable                 → turn on firewall
+ufw delete allow PORT/tcp  → remove firewall rule
+ufw status verbose         → show all rules in detail
+ufw allow 2222/tcp         → allow SSH
+
+SERVICES
+────────
+systemctl status SERVICE   → check service
+systemctl restart SERVICE  → restart service
+systemctl enable SERVICE   → start on boot
+
+LOGS
+────
+tail -f /var/log/auth.log  → watch login attempts
+cat /var/log/auth.log | grep "Failed" → see failures
+
+ BASH SCRIPTING:
+
+VARIABLES:
+NAME="value"              → create variable
+$NAME                     → use variable
+$(command)                → store command output
+$((expression))           → math operations
+
+```
+
+📝 **CHEAT SHEET UPDATE**
+```
+CONDITIONS WITH NUMBERS:
+[ $VAR -gt 10 ]   → greater than 10
+[ $VAR -lt 10 ]   → less than 10
+[ $VAR -eq 10 ]   → equal to 10
+[ $VAR -ne 10 ]   → not equal to 10
+
+USEFUL COMMANDS:
+last -n 5         → last 5 logins
+wc -l             → count lines
+ss -tulpn         → open ports
+**Save:**
+```
+Ctrl + X → Y → Enter
