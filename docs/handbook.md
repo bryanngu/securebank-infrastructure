@@ -619,6 +619,105 @@ GitHub Repo:     ~/securebank-infrastructure/
 
 ---
 
+📝 **HANDBOOK UPDATE**
+```
+DOCKERFILE INSTRUCTIONS:
+FROM IMAGE     → base image to build on
+LABEL key=val  → metadata
+RUN command    → run during build
+COPY src dest  → copy files into image
+EXPOSE port    → document port usage
+CMD ["cmd"]    → run when container starts
+ENV KEY=value  → set environment variable
+WORKDIR /path  → set working directory
+
+
+## 6. DOCKER
+
+### 6.1 Overview
+```
+Docker packages applications with everything
+they need to run identically anywhere.
+
+IMAGE     → blueprint/template (read only)
+CONTAINER → running instance of image
+DOCKERFILE → instructions to build image
+```
+
+### 6.2 Installation on Ubuntu
+```bash
+# Add Docker GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Add Docker repository
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list
+
+# Install Docker
+sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+# Add user to docker group
+sudo usermod -aG docker USERNAME
+newgrp docker
+```
+
+### 6.3 Dockerfile Template
+```dockerfile
+FROM nginx:latest
+LABEL maintainer="name@email.com"
+RUN rm -rf /usr/share/nginx/html/*
+COPY html/ /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### 6.4 Essential Commands
+```bash
+# Images
+docker images                    → list images
+docker build -t NAME:VERSION .   → build image
+docker pull IMAGE                → download image
+docker rmi IMAGE                 → delete image
+
+# Containers
+docker ps                        → running containers
+docker ps -a                     → all containers
+docker run -d -p HOST:CONTAINER --name NAME IMAGE
+docker stop CONTAINER            → stop container
+docker rm CONTAINER              → delete container
+docker logs CONTAINER            → view logs
+docker exec -it CONTAINER bash   → shell access
+
+# Combined stop and remove
+docker stop NAME && docker rm NAME
+```
+
+### 6.5 Zero Downtime Deployment
+```
+STEPS:
+1. Build new image with new version tag
+   docker build -t app:2.0 .
+
+2. Start new version on different port
+   docker run -d -p 8081:80 --name app-v2 app:2.0
+
+3. Test new version works
+   http://SERVER_IP:8081
+
+4. Stop old version
+   docker stop app-v1 && docker rm app-v1
+
+5. Start new version on main port
+   docker run -d -p 8080:80 --name app app:2.0
+```
+
+### 6.6 Rollback
+```bash
+docker stop CONTAINER
+docker rm CONTAINER
+docker run -d -p PORT:80 --name NAME IMAGE:OLD_VERSION
+```
+---
+
 *This handbook is updated as new modules are completed.*
 *Latest version always on GitHub: bryanngu/securebank-infrastructure*
 

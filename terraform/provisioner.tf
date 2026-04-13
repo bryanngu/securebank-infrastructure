@@ -9,16 +9,21 @@ resource "null_resource" "server_setup" {
     host        = var.server_ip
     user        = var.admin_user
     port        = var.ssh_port
-    private_key = file("~/.ssh/id_rsa")
+    private_key = file("~/.ssh/id_ed25519")
   }
 
   # Phase 1 - System Update
   provisioner "remote-exec" {
     inline = [
       "echo '=== Phase 1: System Update ==='",
+      "sudo systemctl stop unattended-upgrades",
+      "sudo systemctl disable unattended-upgrades",
+      "sudo rm -f /var/lib/dpkg/lock-frontend",
+      "sudo rm -f /var/lib/dpkg/lock",
+      "sudo rm -f /var/lib/apt/lists/lock",
+      "sudo dpkg --configure -a",
       "sudo DEBIAN_FRONTEND=noninteractive apt update -y",
-      "sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y",
-      "echo '=== Phase 1: Complete ==='"
+       "echo '=== Phase 1: Complete ==='"
     ]
   }
 
